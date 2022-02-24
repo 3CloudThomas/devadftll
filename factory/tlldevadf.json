@@ -1,0 +1,9 @@
+{
+	"name": "tlldevadf",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6c31956e-c566-45eb-873a-cd837d946827",
+		"tenantId": "7c55576f-e738-4097-8c71-053078eadf3f"
+	}
+}
