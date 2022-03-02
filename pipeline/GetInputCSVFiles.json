@@ -52,7 +52,7 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "TestFileName",
+								"variableName": "FileName",
 								"value": {
 									"value": "parameters.FileName",
 									"type": "Expression"
@@ -140,7 +140,7 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "TestFileName",
+								"variableName": "FileName",
 								"value": {
 									"value": "parameters.FileName",
 									"type": "Expression"
@@ -152,7 +152,7 @@
 			}
 		],
 		"variables": {
-			"TestFileName": {
+			"FileName": {
 				"type": "String"
 			},
 			"ContainerName": {
