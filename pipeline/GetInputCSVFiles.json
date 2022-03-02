@@ -53,7 +53,10 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "TestFileName",
-								"value": "test.cav"
+								"value": {
+									"value": "parameters.FileName",
+									"type": "Expression"
+								}
 							}
 						},
 						{
@@ -107,7 +110,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"FileName": {
-											"value": "@pipeline().parameters.FileName",
+											"value": "parameters.FileName",
 											"type": "Expression"
 										}
 									}
