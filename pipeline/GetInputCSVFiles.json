@@ -48,7 +48,11 @@
 							"name": "Test",
 							"type": "SetVariable",
 							"dependsOn": [],
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TestFileName",
+								"value": "test.cav"
+							}
 						}
 					]
 				}
