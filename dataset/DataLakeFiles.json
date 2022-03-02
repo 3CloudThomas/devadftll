@@ -1,10 +1,6 @@
 {
 	"name": "DataLakeFiles",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "adf",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
