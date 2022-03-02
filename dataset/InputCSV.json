@@ -7,12 +7,10 @@
 		},
 		"parameters": {
 			"FileName": {
-				"type": "string",
-				"defaultValue": "@dataset().Filename"
+				"type": "string"
 			},
 			"Container": {
-				"type": "string",
-				"defaultValue": "@dataset().Container"
+				"type": "string"
 			}
 		},
 		"annotations": [],

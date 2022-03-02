@@ -94,17 +94,7 @@
 							"inputs": [
 								{
 									"referenceName": "InputCSV",
-									"type": "DatasetReference",
-									"parameters": {
-										"FileName": {
-											"value": "@toLower('')",
-											"type": "Expression"
-										},
-										"Container": {
-											"value": "@toLower('')",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
