@@ -123,7 +123,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"FileName": {
-											"value": "parameters.FileName",
+											"value": "@dataset().Filename",
 											"type": "Expression"
 										},
 										"Container": {
