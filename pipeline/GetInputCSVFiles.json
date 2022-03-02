@@ -21,7 +21,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "DataLakeFiles",
+						"referenceName": "TableWithDataLakeFilenames",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false

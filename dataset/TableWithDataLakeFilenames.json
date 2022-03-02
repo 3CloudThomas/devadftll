@@ -1,5 +1,5 @@
 {
-	"name": "DataLakeFiles",
+	"name": "TableWithDataLakeFilenames",
 	"properties": {
 		"annotations": [],
 		"type": "AzureSqlTable",
