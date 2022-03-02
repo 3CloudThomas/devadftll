@@ -129,7 +129,7 @@
 									"referenceName": "OutputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"FileName": "category.csv"
+										"FileName": "@toLower('')"
 									}
 								}
 							]
