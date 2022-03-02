@@ -110,7 +110,10 @@
 							"outputs": [
 								{
 									"referenceName": "OutputCSV",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName2": "@item().FileName"
+									}
 								}
 							]
 						}
