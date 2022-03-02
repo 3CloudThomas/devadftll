@@ -123,11 +123,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"FileName": {
-											"value": "@variables('FileName1')",
+											"value": "category.csv",
 											"type": "Expression"
 										},
 										"Container": {
-											"value": "@variables('ContainerName1')",
+											"value": "input",
 											"type": "Expression"
 										}
 									}
