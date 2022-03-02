@@ -54,6 +54,12 @@
 				}
 			}
 		],
+		"variables": {
+			"TestFileName": {
+				"type": "String",
+				"defaultValue": "category.csv"
+			}
+		},
 		"annotations": []
 	}
 }
