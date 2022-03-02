@@ -22,10 +22,7 @@
 					"value": "@dataset().FileName1",
 					"type": "Expression"
 				},
-				"fileSystem": {
-					"value": "@dataset().Container",
-					"type": "Expression"
-				}
+				"fileSystem": "input"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
