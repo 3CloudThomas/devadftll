@@ -103,26 +103,19 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "GenericCSVFile",
+									"referenceName": "InputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"Layer": "input",
-										"FileNamePrefix": "CSV",
-										"FileName": "category",
-										"Subject": "dimension"
+										"FileName": "category.csv"
 									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "GenericCSVFile",
+									"referenceName": "OutputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"Layer": "output",
-										"FolderName": "@toLower('')",
-										"FileNamePrefix": "@toLower('')",
-										"FileName": "@toLower('')",
-										"Subject": "@pipeline().parameter.Subject"
+										"FileName": "category.csv"
 									}
 								}
 							]

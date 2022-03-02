@@ -1,5 +1,5 @@
 {
-	"name": "InputCSV",
+	"name": "OutputCSV",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DataLakeStorage",
@@ -19,22 +19,12 @@
 					"value": "@dataset().FileName",
 					"type": "Expression"
 				},
-				"fileSystem": "input"
+				"fileSystem": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
