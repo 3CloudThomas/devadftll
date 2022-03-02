@@ -123,11 +123,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"FileName": {
-											"value": "@variables('FileName')",
+											"value": "@variables('FileName1')",
 											"type": "Expression"
 										},
 										"Container": {
-											"value": "@variables('ContainerName')",
+											"value": "@variables('ContainerName1')",
 											"type": "Expression"
 										}
 									}
@@ -150,7 +150,7 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "ContainerName",
+								"variableName": "ContainerName1",
 								"value": {
 									"value": "parameters.Container",
 									"type": "Expression"
