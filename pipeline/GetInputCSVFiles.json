@@ -100,17 +100,7 @@
 							"outputs": [
 								{
 									"referenceName": "OutputCSV",
-									"type": "DatasetReference",
-									"parameters": {
-										"FileName": {
-											"value": "@dataset.FileName",
-											"type": "Expression"
-										},
-										"Container": {
-											"value": "@dataset.Container",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								}
 							]
 						}
