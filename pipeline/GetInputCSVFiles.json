@@ -106,7 +106,10 @@
 									"referenceName": "InputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"FileName": "category.csv"
+										"FileName": {
+											"value": "@pipeline().parameters.FileName",
+											"type": "Expression"
+										}
 									}
 								}
 							],
