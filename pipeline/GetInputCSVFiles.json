@@ -47,7 +47,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Test",
+							"name": "Filename",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
@@ -64,7 +64,7 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Test",
+									"activity": "Filename",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -133,6 +133,19 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Test_copy1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TestFileName",
+								"value": {
+									"value": "parameters.FileName",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -140,8 +153,10 @@
 		],
 		"variables": {
 			"TestFileName": {
-				"type": "String",
-				"defaultValue": "category.csv"
+				"type": "String"
+			},
+			"ContainerName": {
+				"type": "String"
 			}
 		},
 		"annotations": []
