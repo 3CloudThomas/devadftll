@@ -119,7 +119,8 @@
 										"FileName": {
 											"value": "@toLower('')",
 											"type": "Expression"
-										}
+										},
+										"Container": "@toLower('')"
 									}
 								}
 							],
