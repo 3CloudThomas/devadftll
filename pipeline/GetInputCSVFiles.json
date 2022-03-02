@@ -68,6 +68,12 @@
 									"dependencyConditions": [
 										"Succeeded"
 									]
+								},
+								{
+									"activity": "ContainerName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
 								}
 							],
 							"policy": {
@@ -117,10 +123,13 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"FileName": {
-											"value": "@toLower('')",
+											"value": "@variables('FileName')",
 											"type": "Expression"
 										},
-										"Container": "@toLower('')"
+										"Container": {
+											"value": "@variables('ContainerName')",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -129,20 +138,21 @@
 									"referenceName": "OutputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"FileName": "@toLower('')"
+										"FileName": "@toLower('')",
+										"Container": "output"
 									}
 								}
 							]
 						},
 						{
-							"name": "Test_copy1",
+							"name": "ContainerName",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "FileName",
+								"variableName": "ContainerName",
 								"value": {
-									"value": "parameters.FileName",
+									"value": "parameters.Container",
 									"type": "Expression"
 								}
 							}
