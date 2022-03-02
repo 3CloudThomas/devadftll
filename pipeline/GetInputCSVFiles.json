@@ -94,7 +94,13 @@
 							"inputs": [
 								{
 									"referenceName": "InputCSV",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": {
+											"value": "@item().Container",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
