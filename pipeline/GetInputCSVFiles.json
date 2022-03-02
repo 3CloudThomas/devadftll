@@ -102,9 +102,12 @@
 									"referenceName": "OutputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"FileName": "@toLower('')",
+										"FileName": {
+											"value": "@dataset.FileName",
+											"type": "Expression"
+										},
 										"Container": {
-											"value": "@toLower('')",
+											"value": "@dataset.Container",
 											"type": "Expression"
 										}
 									}
