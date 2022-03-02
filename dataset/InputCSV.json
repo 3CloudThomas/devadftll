@@ -9,6 +9,10 @@
 			"FileName": {
 				"type": "string",
 				"defaultValue": "@dataset().Filename"
+			},
+			"Container": {
+				"type": "string",
+				"defaultValue": "@dataset().Container"
 			}
 		},
 		"annotations": [],
@@ -20,7 +24,10 @@
 					"value": "@dataset().FileName",
 					"type": "Expression"
 				},
-				"fileSystem": "input"
+				"fileSystem": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
