@@ -1,0 +1,51 @@
+{
+	"name": "GenericCSVFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Layer": {
+				"type": "string"
+			},
+			"FolderName": {
+				"type": "string"
+			},
+			"FileNamePrefix": {
+				"type": "string"
+			},
+			"FileName": {
+				"type": "string"
+			},
+			"Subject": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "SubcategoryID",
+				"type": "String"
+			},
+			{
+				"name": "SubcategoryName",
+				"type": "String"
+			},
+			{
+				"name": "CategoryID",
+				"type": "String"
+			}
+		]
+	}
+}
