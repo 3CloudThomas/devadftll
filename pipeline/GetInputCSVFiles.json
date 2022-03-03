@@ -112,7 +112,11 @@
 									"referenceName": "OutputCSV",
 									"type": "DatasetReference",
 									"parameters": {
-										"FileName2": "@item().FileName"
+										"FileName": "@item().FileName",
+										"Container": {
+											"value": "@item().SinkContainer",
+											"type": "Expression"
+										}
 									}
 								}
 							]
