@@ -100,7 +100,7 @@
 											"value": "@item().Container",
 											"type": "Expression"
 										},
-										"FileName1": {
+										"FileName": {
 											"value": "@item().FileName",
 											"type": "Expression"
 										}

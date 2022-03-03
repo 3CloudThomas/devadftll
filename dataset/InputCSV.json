@@ -9,7 +9,7 @@
 			"Container": {
 				"type": "string"
 			},
-			"FileName1": {
+			"FileName": {
 				"type": "string"
 			}
 		},
@@ -19,10 +19,13 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().FileName1",
+					"value": "@dataset().FileName",
 					"type": "Expression"
 				},
-				"fileSystem": "input"
+				"fileSystem": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
