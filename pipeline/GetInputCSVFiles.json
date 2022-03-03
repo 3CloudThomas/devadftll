@@ -97,7 +97,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"Container": {
-											"value": "@item().Container",
+											"value": "@item().SourceContainer",
 											"type": "Expression"
 										},
 										"FileName": {
