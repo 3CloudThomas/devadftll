@@ -1,0 +1,18 @@
+{
+	"name": "adsl_file_arrives",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/input/blobs/2022/",
+			"blobPathEndsWith": ".csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/35ca6acb-cb69-49a2-90d5-05277377263f/resourceGroups/ThomasLeblanc/providers/Microsoft.Storage/storageAccounts/apisourcessink",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
