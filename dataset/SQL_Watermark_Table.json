@@ -1,0 +1,12 @@
+{
+	"name": "SQL_Watermark_Table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AdvWrkLT19",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}

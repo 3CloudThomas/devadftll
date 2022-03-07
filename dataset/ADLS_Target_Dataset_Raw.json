@@ -1,0 +1,29 @@
+{
+	"name": "ADLS_Target_Dataset_Raw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"NewWatermarkValue": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureBlobFSFile",
+		"typeProperties": {
+			"format": {
+				"type": "ParquetFormat"
+			},
+			"fileName": {
+				"value": "@concat(item().table_name,'_',dataset().NewWatermarkValue)",
+				"type": "Expression"
+			},
+			"folderPath": {
+				"value": "@concat('adventureworks/data/raw/',item().database_name,'/',item().schema_name,'/',item().table_name)",
+				"type": "Expression"
+			}
+		}
+	}
+}
