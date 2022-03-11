@@ -33,11 +33,11 @@
 		},
 		"ADLS_Target_Dataset_Raw_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "@concat(item().table_name,'_',dataset().NewWatermarkValue)"
+			"defaultValue": "@concat(item().SourceTableName,'_',dataset().NewWatermarkValue)"
 		},
 		"ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "@concat('adventureworks/data/raw/',item().database_name,'/',item().schema_name,'/',item().table_name)"
+			"defaultValue": "@concat('adventureworks/data/raw/',item().SourceDatabaseName,'/',item().SourceSchemaName,'/',item().SourceTableName)"
 		},
 		"2022CSVFiles_properties_typeProperties_scope": {
 			"type": "string",
@@ -1254,7 +1254,7 @@
 													"source": {
 														"type": "AzureSqlSource",
 														"sqlReaderQuery": {
-															"value": "select * from @{item().schema_name}.@{item().table_name} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+															"value": "select * from @{item().SourceSchemaName}.@{item().SourceTableName} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
 															"type": "Expression"
 														},
 														"partitionOption": "None"

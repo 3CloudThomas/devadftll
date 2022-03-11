@@ -29,11 +29,11 @@
 		},
 		"ADLS_Target_Dataset_Raw_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "@concat(item().table_name,'_',dataset().NewWatermarkValue)"
+			"defaultValue": "@concat(item().SourceTableName,'_',dataset().NewWatermarkValue)"
 		},
 		"ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "@concat('adventureworks/data/raw/',item().database_name,'/',item().schema_name,'/',item().table_name)"
+			"defaultValue": "@concat('adventureworks/data/raw/',item().SourceDatabaseName,'/',item().SourceSchemaName,'/',item().SourceTableName)"
 		},
 		"DataLakeStorage_properties_typeProperties_url": {
 			"type": "string",
