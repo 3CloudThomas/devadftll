@@ -222,7 +222,7 @@
 											"source": {
 												"type": "AzureSqlSource",
 												"sqlReaderQuery": {
-													"value": "select * from @{item().schema_name}.@{item().table_name} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+													"value": "select * from @{item().SourceSchemaName}.@{item().SourceTableName} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
 													"type": "Expression"
 												},
 												"partitionOption": "None"
