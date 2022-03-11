@@ -14,12 +14,7 @@
 		"type": "AzureBlobFSFile",
 		"typeProperties": {
 			"format": {
-				"type": "TextFormat",
-				"columnDelimiter": ",",
-				"rowDelimiter": "",
-				"treatEmptyAsNull": true,
-				"skipLineCount": 0,
-				"firstRowAsHeader": false
+				"type": "ParquetFormat"
 			},
 			"fileName": {
 				"value": "@concat(item().SourceTableName,'_',dataset().NewWatermarkValue)",
