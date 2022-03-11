@@ -1,0 +1,349 @@
+{
+	"name": "AdventureWorks_OnPremSQL_To_ADLS_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "SourceTableList",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureBlobFSSource",
+						"recursive": true
+					},
+					"dataset": {
+						"referenceName": "ADLS_Source_Table_List",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachTable",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "SourceTableList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get_New_Watermark_Timestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('SourceTableList').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get_Old_Watermark_TimeStamp",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "SELECT [SourceDBName]\n,[SourceSchemaName]\n,[SourceTableName]\n,format(MAX([Pipeline_WatermarkTimeStamp]), 'yyyy-MM-ddTHH:mm:ss') [Old_WatermarkTimeStamp] \n  FROM [dbo].[tbl_ADFPipeLineRuns]\n  WHERE 1=1\n  AND [SourceDBName] = '@{item().database_name}'\n  AND [SourceSchemaName] = '@{item().schema_name}'\n  AND [SourceTableName] = '@{item().table_name}'\n  AND [Status] = 'Success'\n  GROUP BY [SourceDBName] ,[SourceSchemaName], [SourceTableName]",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "SQL_Watermark_Table",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Full_Load_Yes_No",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get_Old_Watermark_TimeStamp",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@or(equals(item().full_refresh,'Y'), not(contains(string(activity('Get_Old_Watermark_TimeStamp').output),'firstRow')))",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Delta_Load",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "SELECT * FROM @{item().schema_name}.@{item().table_name} where @{item().modified_date} > '@{activity('Get_Old_Watermark_TimeStamp').output.firstRow.Old_WatermarkTimeStamp}' AND @{item().modified_date} < '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "AzureBlobFSSink"
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "SQL_Source_Data_Table",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ADLS_Target_Dataset_Raw",
+												"type": "DatasetReference",
+												"parameters": {
+													"NewWatermarkValue": {
+														"value": "@activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Insert_New_WaterMark_Timestamp_Delta_copy",
+										"type": "Lookup",
+										"dependsOn": [
+											{
+												"activity": "Delta_Load",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"sqlReaderQuery": {
+													"value": "INSERT INTO [dbo].[tbl_ADFPipeLineRuns]\n           ([ADFName]\n           ,[ActivityName]\n           ,[PipelineName]\n           ,[Pipeline_WatermarkTimeStamp]\n           ,[SourceDBName]\n           ,[SourceSchemaName]\n           ,[SourceTableName]\n           ,[RecordsRead]\n           ,[RecordsWrite]\n           ,[Status]\n           ,[PipeLineRunId]\n           ,[PipelineTriggerId]\n           ,[PipelineTriggerName]\n           ,[PipelineTriggerType])\n     OUTPUT '1 Row Inserted'\n     VALUES\n           ('@{pipeline().DataFactory}'\n           ,'Delta_Load'\n           ,'@{pipeline().Pipeline}'       \n ,'@{activity('Get_New_Watermark_TimeStamp').output.firstRow.NewWatermarkValue}'\n           ,'@{item().database_name}'\n           ,'@{item().schema_name}'\n           ,'@{item().table_name}'\n           ,@{activity('Delta_Load').output.rowsRead}\n           ,@{activity('Delta_Load').output.rowsCopied}\n           ,'Success'\n           ,'@{pipeline().RunId}'\n           ,'@{pipeline().TriggerId}'\n           ,'@{pipeline().TriggerName}'\n           ,'@{pipeline().TriggerType}'\n)",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"dataset": {
+												"referenceName": "SQL_Watermark_Table",
+												"type": "DatasetReference"
+											}
+										}
+									},
+									{
+										"name": "DeltaLoad_Success_Email",
+										"type": "WebActivity",
+										"dependsOn": [
+											{
+												"activity": "Insert_New_WaterMark_Timestamp_Delta_copy",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
+											"method": "POST",
+											"body": {
+												"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Full_Load",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "select * from @{item().schema_name}.@{item().table_name} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "AzureBlobFSSink"
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "SQL_Source_Data_Table",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ADLS_Target_Dataset_Raw",
+												"type": "DatasetReference",
+												"parameters": {
+													"NewWatermarkValue": {
+														"value": "@activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Insert_New_WaterMark_Timestamp_Full",
+										"type": "Lookup",
+										"dependsOn": [
+											{
+												"activity": "Full_Load",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"sqlReaderQuery": {
+													"value": "INSERT INTO [dbo].[tbl_ADFPipeLineRuns]\n           ([ADFName]\n           ,[ActivityName]\n           ,[PipelineName]\n           ,[Pipeline_WatermarkTimeStamp]\n           ,[SourceDBName]\n           ,[SourceSchemaName]\n           ,[SourceTableName]\n           ,[RecordsRead]\n           ,[RecordsWrite]\n           ,[Status]\n           ,[PipeLineRunId]\n           ,[PipelineTriggerId]\n           ,[PipelineTriggerName]\n           ,[PipelineTriggerType])\n     OUTPUT '1 Row Inserted'\n     VALUES\n           ('@{pipeline().DataFactory}'\n           ,'Full_Load'\n           ,'@{pipeline().Pipeline}'       \n ,'@{activity('Get_New_Watermark_TimeStamp').output.firstRow.NewWatermarkValue}'\n           ,'@{item().database_name}'\n           ,'@{item().schema_name}'\n           ,'@{item().table_name}'\n           ,@{activity('Full_Load').output.rowsRead}\n           ,@{activity('Full_Load').output.rowsCopied}\n           ,'Success'\n           ,'@{pipeline().RunId}'\n           ,'@{pipeline().TriggerId}'\n           ,'@{pipeline().TriggerName}'\n           ,'@{pipeline().TriggerType}'\n)",
+													"type": "Expression"
+												},
+												"partitionOption": "None"
+											},
+											"dataset": {
+												"referenceName": "SQL_Watermark_Table",
+												"type": "DatasetReference"
+											}
+										}
+									},
+									{
+										"name": "FullLoad_Success_Email",
+										"type": "WebActivity",
+										"dependsOn": [
+											{
+												"activity": "Insert_New_WaterMark_Timestamp_Full",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
+											"method": "POST",
+											"body": {
+												"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get_New_Watermark_Timestamp",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select format(GETDATE(), 'yyyy-MM-ddTHH:mm:ss') as NewWatermarkValue",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SQL_Source_Data_Table",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}

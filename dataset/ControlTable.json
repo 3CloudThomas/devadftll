@@ -1,0 +1,82 @@
+{
+	"name": "ControlTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "adfPipelineRunID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DataFactoryName",
+				"type": "varchar"
+			},
+			{
+				"name": "ActivityName",
+				"type": "varchar"
+			},
+			{
+				"name": "PipelineName",
+				"type": "varchar"
+			},
+			{
+				"name": "Pipeline_WatermarkTimeStamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "SourceDBName",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceSchemaName",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceTableName",
+				"type": "varchar"
+			},
+			{
+				"name": "RecordsRead",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RecordsWrite",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "PipeLineRunId",
+				"type": "varchar"
+			},
+			{
+				"name": "PipelineTriggerId",
+				"type": "varchar"
+			},
+			{
+				"name": "PipelineTriggerName",
+				"type": "varchar"
+			},
+			{
+				"name": "PipelineTriggerType",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tbl_ADFPipeLineRuns"
+		}
+	}
+}
