@@ -308,7 +308,7 @@
 											"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
 											"method": "POST",
 											"body": {
-												"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+												"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"tleblanc@3cloudsolutions.com\",\n}",
 												"type": "Expression"
 											}
 										}
