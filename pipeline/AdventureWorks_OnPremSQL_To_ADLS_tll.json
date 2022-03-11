@@ -1,5 +1,5 @@
 {
-	"name": "AdventureWorks_OnPremSQL_To_ADLS_copy1",
+	"name": "AdventureWorks_OnPremSQL_To_ADLS_tll",
 	"properties": {
 		"activities": [
 			{
@@ -65,15 +65,16 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SqlServerSource",
+									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
 										"value": "SELECT [SourceDBName]\n,[SourceSchemaName]\n,[SourceTableName]\n,format(MAX([Pipeline_WatermarkTimeStamp]), 'yyyy-MM-ddTHH:mm:ss') [Old_WatermarkTimeStamp] \n  FROM [dbo].[tbl_ADFPipeLineRuns]\n  WHERE 1=1\n  AND [SourceDBName] = '@{item().database_name}'\n  AND [SourceSchemaName] = '@{item().schema_name}'\n  AND [SourceTableName] = '@{item().table_name}'\n  AND [Status] = 'Success'\n  GROUP BY [SourceDBName] ,[SourceSchemaName], [SourceTableName]",
 										"type": "Expression"
 									},
+									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
 								"dataset": {
-									"referenceName": "SQL_Watermark_Table",
+									"referenceName": "ControlTable",
 									"type": "DatasetReference"
 								}
 							}
