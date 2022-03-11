@@ -154,7 +154,12 @@
 				"type": "AzureBlobFSFile",
 				"typeProperties": {
 					"format": {
-						"type": "ParquetFormat"
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
 					},
 					"fileName": {
 						"value": "[parameters('ADLS_Target_Dataset_Raw_properties_typeProperties_fileName')]",
