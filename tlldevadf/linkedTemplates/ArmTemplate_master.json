@@ -1,0 +1,112 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "tlldevadf"
+		},
+		"AdvWrkLT19_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AdvWrkLT19'"
+		},
+		"DataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'DataLakeStorage'"
+		},
+		"adf_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'adf'"
+		},
+		"ADLS_Source_Table_List_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "ControlTable.csv"
+		},
+		"ADLS_Source_Table_List_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adventureworks/Config"
+		},
+		"ADLS_Target_Dataset_Raw_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat(item().table_name,'_',dataset().NewWatermarkValue)"
+		},
+		"ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('adventureworks/data/raw/',item().database_name,'/',item().schema_name,'/',item().table_name)"
+		},
+		"DataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://apisourcessink.dfs.core.windows.net"
+		},
+		"2022CSVFiles_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/35ca6acb-cb69-49a2-90d5-05277377263f/resourceGroups/ThomasLeblanc/providers/Microsoft.Storage/storageAccounts/apisourcessink"
+		},
+		"adsl_file_arrives_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/35ca6acb-cb69-49a2-90d5-05277377263f/resourceGroups/ThomasLeblanc/providers/Microsoft.Storage/storageAccounts/apisourcessink"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "tlldevadf_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"DataLakeStorage_accountKey": {
+						"value": "[parameters('DataLakeStorage_accountKey')]"
+					},
+					"adf_connectionString": {
+						"value": "[parameters('adf_connectionString')]"
+					},
+					"AdvWrkLT19_connectionString": {
+						"value": "[parameters('AdvWrkLT19_connectionString')]"
+					},
+					"DataLakeStorage_properties_typeProperties_url": {
+						"value": "[parameters('DataLakeStorage_properties_typeProperties_url')]"
+					},
+					"ADLS_Source_Table_List_properties_typeProperties_fileName": {
+						"value": "[parameters('ADLS_Source_Table_List_properties_typeProperties_fileName')]"
+					},
+					"ADLS_Source_Table_List_properties_typeProperties_folderPath": {
+						"value": "[parameters('ADLS_Source_Table_List_properties_typeProperties_folderPath')]"
+					},
+					"ADLS_Target_Dataset_Raw_properties_typeProperties_fileName": {
+						"value": "[parameters('ADLS_Target_Dataset_Raw_properties_typeProperties_fileName')]"
+					},
+					"ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath": {
+						"value": "[parameters('ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath')]"
+					},
+					"2022CSVFiles_properties_typeProperties_scope": {
+						"value": "[parameters('2022CSVFiles_properties_typeProperties_scope')]"
+					},
+					"adsl_file_arrives_properties_typeProperties_scope": {
+						"value": "[parameters('adsl_file_arrives_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

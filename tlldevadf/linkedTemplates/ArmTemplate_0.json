@@ -1,0 +1,1460 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "tlldevadf"
+		},
+		"DataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'DataLakeStorage'"
+		},
+		"adf_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'adf'"
+		},
+		"AdvWrkLT19_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AdvWrkLT19'"
+		},
+		"DataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://apisourcessink.dfs.core.windows.net"
+		},
+		"ADLS_Source_Table_List_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "ControlTable.csv"
+		},
+		"ADLS_Source_Table_List_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adventureworks/Config"
+		},
+		"ADLS_Target_Dataset_Raw_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat(item().table_name,'_',dataset().NewWatermarkValue)"
+		},
+		"ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "@concat('adventureworks/data/raw/',item().database_name,'/',item().schema_name,'/',item().table_name)"
+		},
+		"2022CSVFiles_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/35ca6acb-cb69-49a2-90d5-05277377263f/resourceGroups/ThomasLeblanc/providers/Microsoft.Storage/storageAccounts/apisourcessink"
+		},
+		"adsl_file_arrives_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/35ca6acb-cb69-49a2-90d5-05277377263f/resourceGroups/ThomasLeblanc/providers/Microsoft.Storage/storageAccounts/apisourcessink"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DataLakeStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('DataLakeStorage_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('DataLakeStorage_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adf')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('adf_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DESKTOP-NQODLCT')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/local')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADLS_Source_Table_List')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlobFSFile",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"quoteChar": "\"",
+						"nullValue": "",
+						"encodingName": null,
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": true
+					},
+					"fileName": "[parameters('ADLS_Source_Table_List_properties_typeProperties_fileName')]",
+					"folderPath": {
+						"value": "[parameters('ADLS_Source_Table_List_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADLS_Target_Dataset_Raw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"NewWatermarkValue": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureBlobFSFile",
+				"typeProperties": {
+					"format": {
+						"type": "ParquetFormat"
+					},
+					"fileName": {
+						"value": "[parameters('ADLS_Target_Dataset_Raw_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": {
+						"value": "[parameters('ADLS_Target_Dataset_Raw_properties_typeProperties_folderPath')]",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ControlTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "adfPipelineRunID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DataFactoryName",
+						"type": "varchar"
+					},
+					{
+						"name": "ActivityName",
+						"type": "varchar"
+					},
+					{
+						"name": "PipelineName",
+						"type": "varchar"
+					},
+					{
+						"name": "Pipeline_WatermarkTimeStamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "SourceDBName",
+						"type": "varchar"
+					},
+					{
+						"name": "SourceSchemaName",
+						"type": "varchar"
+					},
+					{
+						"name": "SourceTableName",
+						"type": "varchar"
+					},
+					{
+						"name": "RecordsRead",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RecordsWrite",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Status",
+						"type": "varchar"
+					},
+					{
+						"name": "PipeLineRunId",
+						"type": "varchar"
+					},
+					{
+						"name": "PipelineTriggerId",
+						"type": "varchar"
+					},
+					{
+						"name": "PipelineTriggerName",
+						"type": "varchar"
+					},
+					{
+						"name": "PipelineTriggerType",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tbl_ADFPipeLineRuns"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GenericCSVFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Layer": {
+						"type": "string"
+					},
+					"FolderName": {
+						"type": "string"
+					},
+					"FileNamePrefix": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					},
+					"Subject": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().FileNamePrefix,dataset().FileName)",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(dataset().Layer,'/',dataset().Subject,dataset().FolderName)",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "SubcategoryID",
+						"type": "String"
+					},
+					{
+						"name": "SubcategoryName",
+						"type": "String"
+					},
+					{
+						"name": "CategoryID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/InputCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OutputCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					},
+					"Container": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TableWithDataLakeFilenames')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "adlgen2",
+						"type": "varchar"
+					},
+					{
+						"name": "Container",
+						"type": "varchar"
+					},
+					{
+						"name": "folder",
+						"type": "varchar"
+					},
+					{
+						"name": "FileName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DataLakeFiles"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvWrkLT19')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('AdvWrkLT19_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "local",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/local')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetInputCSVFiles')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "TableWithDataLakeFilenames",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEachFile",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "InputCSV",
+											"type": "DatasetReference",
+											"parameters": {
+												"Container": {
+													"value": "@item().SourceContainer",
+													"type": "Expression"
+												},
+												"FileName": {
+													"value": "@item().FileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "OutputCSV",
+											"type": "DatasetReference",
+											"parameters": {
+												"FileName": "@item().FileName",
+												"Container": {
+													"value": "@item().SinkContainer",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/TableWithDataLakeFilenames')]",
+				"[concat(variables('factoryId'), '/datasets/InputCSV')]",
+				"[concat(variables('factoryId'), '/datasets/OutputCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_Source_Data_Table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AdvWrkLT19",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AdvWrkLT19')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_Watermark_Table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AdvWrkLT19",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AdvWrkLT19')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdventureWorks_OnPremSQL_To_ADLS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SourceTableList",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureBlobFSSource",
+								"recursive": true
+							},
+							"dataset": {
+								"referenceName": "ADLS_Source_Table_List",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEachTable",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SourceTableList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Get_New_Watermark_Timestamp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('SourceTableList').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Get_Old_Watermark_TimeStamp",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "SELECT [SourceDBName]\n,[SourceSchemaName]\n,[SourceTableName]\n,format(MAX([Pipeline_WatermarkTimeStamp]), 'yyyy-MM-ddTHH:mm:ss') [Old_WatermarkTimeStamp] \n  FROM [dbo].[tbl_ADFPipeLineRuns]\n  WHERE 1=1\n  AND [SourceDBName] = '@{item().database_name}'\n  AND [SourceSchemaName] = '@{item().schema_name}'\n  AND [SourceTableName] = '@{item().table_name}'\n  AND [Status] = 'Success'\n  GROUP BY [SourceDBName] ,[SourceSchemaName], [SourceTableName]",
+												"type": "Expression"
+											},
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SQL_Watermark_Table",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "Full_Load_Yes_No",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Get_Old_Watermark_TimeStamp",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@or(equals(item().full_refresh,'Y'), not(contains(string(activity('Get_Old_Watermark_TimeStamp').output),'firstRow')))",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Delta_Load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "SELECT * FROM @{item().schema_name}.@{item().table_name} where @{item().modified_date} > '@{activity('Get_Old_Watermark_TimeStamp').output.firstRow.Old_WatermarkTimeStamp}' AND @{item().modified_date} < '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "AzureBlobFSSink"
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "SQL_Source_Data_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "ADLS_Target_Dataset_Raw",
+														"type": "DatasetReference",
+														"parameters": {
+															"NewWatermarkValue": {
+																"value": "@activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Insert_New_WaterMark_Timestamp_Delta_copy",
+												"type": "Lookup",
+												"dependsOn": [
+													{
+														"activity": "Delta_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "INSERT INTO [dbo].[tbl_ADFPipeLineRuns]\n           ([ADFName]\n           ,[ActivityName]\n           ,[PipelineName]\n           ,[Pipeline_WatermarkTimeStamp]\n           ,[SourceDBName]\n           ,[SourceSchemaName]\n           ,[SourceTableName]\n           ,[RecordsRead]\n           ,[RecordsWrite]\n           ,[Status]\n           ,[PipeLineRunId]\n           ,[PipelineTriggerId]\n           ,[PipelineTriggerName]\n           ,[PipelineTriggerType])\n     OUTPUT '1 Row Inserted'\n     VALUES\n           ('@{pipeline().DataFactory}'\n           ,'Delta_Load'\n           ,'@{pipeline().Pipeline}'       \n ,'@{activity('Get_New_Watermark_TimeStamp').output.firstRow.NewWatermarkValue}'\n           ,'@{item().database_name}'\n           ,'@{item().schema_name}'\n           ,'@{item().table_name}'\n           ,@{activity('Delta_Load').output.rowsRead}\n           ,@{activity('Delta_Load').output.rowsCopied}\n           ,'Success'\n           ,'@{pipeline().RunId}'\n           ,'@{pipeline().TriggerId}'\n           ,'@{pipeline().TriggerName}'\n           ,'@{pipeline().TriggerType}'\n)",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "SQL_Watermark_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												}
+											},
+											{
+												"name": "DeltaLoad_Success_Email",
+												"type": "WebActivity",
+												"dependsOn": [
+													{
+														"activity": "Insert_New_WaterMark_Timestamp_Delta_copy",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
+													"method": "POST",
+													"headers": {},
+													"body": {
+														"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "Full_Load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "select * from @{item().schema_name}.@{item().table_name} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "AzureBlobFSSink"
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "SQL_Source_Data_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "ADLS_Target_Dataset_Raw",
+														"type": "DatasetReference",
+														"parameters": {
+															"NewWatermarkValue": {
+																"value": "@activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Insert_New_WaterMark_Timestamp_Full",
+												"type": "Lookup",
+												"dependsOn": [
+													{
+														"activity": "Full_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "INSERT INTO [dbo].[tbl_ADFPipeLineRuns]\n           ([ADFName]\n           ,[ActivityName]\n           ,[PipelineName]\n           ,[Pipeline_WatermarkTimeStamp]\n           ,[SourceDBName]\n           ,[SourceSchemaName]\n           ,[SourceTableName]\n           ,[RecordsRead]\n           ,[RecordsWrite]\n           ,[Status]\n           ,[PipeLineRunId]\n           ,[PipelineTriggerId]\n           ,[PipelineTriggerName]\n           ,[PipelineTriggerType])\n     OUTPUT '1 Row Inserted'\n     VALUES\n           ('@{pipeline().DataFactory}'\n           ,'Full_Load'\n           ,'@{pipeline().Pipeline}'       \n ,'@{activity('Get_New_Watermark_TimeStamp').output.firstRow.NewWatermarkValue}'\n           ,'@{item().database_name}'\n           ,'@{item().schema_name}'\n           ,'@{item().table_name}'\n           ,@{activity('Full_Load').output.rowsRead}\n           ,@{activity('Full_Load').output.rowsCopied}\n           ,'Success'\n           ,'@{pipeline().RunId}'\n           ,'@{pipeline().TriggerId}'\n           ,'@{pipeline().TriggerName}'\n           ,'@{pipeline().TriggerType}'\n)",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "SQL_Watermark_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												}
+											},
+											{
+												"name": "FullLoad_Success_Email",
+												"type": "WebActivity",
+												"dependsOn": [
+													{
+														"activity": "Insert_New_WaterMark_Timestamp_Full",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
+													"method": "POST",
+													"headers": {},
+													"body": {
+														"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Get_New_Watermark_Timestamp",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select format(GETDATE(), 'yyyy-MM-ddTHH:mm:ss') as NewWatermarkValue",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SQL_Source_Data_Table",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ADLS_Source_Table_List')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_Source_Data_Table')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_Watermark_Table')]",
+				"[concat(variables('factoryId'), '/datasets/ADLS_Target_Dataset_Raw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdventureWorks_OnPremSQL_To_ADLS_tll')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SourceTableList",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureBlobFSSource",
+								"recursive": true
+							},
+							"dataset": {
+								"referenceName": "ADLS_Source_Table_List",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEachTable",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SourceTableList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Get_New_Watermark_Timestamp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('SourceTableList').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Get_Old_Watermark_TimeStamp",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "SELECT [SourceDBName]\n,[SourceSchemaName]\n,[SourceTableName]\n,format(MAX([Pipeline_WatermarkTimeStamp]), 'yyyy-MM-ddTHH:mm:ss') [Old_WatermarkTimeStamp] \n  FROM [dbo].[tbl_ADFPipeLineRuns]\n  WHERE 1=1\n  AND [SourceDBName] = '@{item().database_name}'\n  AND [SourceSchemaName] = '@{item().schema_name}'\n  AND [SourceTableName] = '@{item().table_name}'\n  AND [Status] = 'Success'\n  GROUP BY [SourceDBName] ,[SourceSchemaName], [SourceTableName]",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "ControlTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "Full_Load_Yes_No",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Get_Old_Watermark_TimeStamp",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@or(equals(item().full_refresh,'Y'), not(contains(string(activity('Get_Old_Watermark_TimeStamp').output),'firstRow')))",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Delta_Load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "SELECT * FROM @{item().schema_name}.@{item().table_name} where @{item().modified_date} > '@{activity('Get_Old_Watermark_TimeStamp').output.firstRow.Old_WatermarkTimeStamp}' AND @{item().modified_date} < '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "AzureBlobFSSink"
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "SQL_Source_Data_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "ADLS_Target_Dataset_Raw",
+														"type": "DatasetReference",
+														"parameters": {
+															"NewWatermarkValue": {
+																"value": "@activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Insert_New_WaterMark_Timestamp_Delta_copy",
+												"type": "Lookup",
+												"dependsOn": [
+													{
+														"activity": "Delta_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "INSERT INTO [dbo].[tbl_ADFPipeLineRuns]\n           ([ADFName]\n           ,[ActivityName]\n           ,[PipelineName]\n           ,[Pipeline_WatermarkTimeStamp]\n           ,[SourceDBName]\n           ,[SourceSchemaName]\n           ,[SourceTableName]\n           ,[RecordsRead]\n           ,[RecordsWrite]\n           ,[Status]\n           ,[PipeLineRunId]\n           ,[PipelineTriggerId]\n           ,[PipelineTriggerName]\n           ,[PipelineTriggerType])\n     OUTPUT '1 Row Inserted'\n     VALUES\n           ('@{pipeline().DataFactory}'\n           ,'Delta_Load'\n           ,'@{pipeline().Pipeline}'       \n ,'@{activity('Get_New_Watermark_TimeStamp').output.firstRow.NewWatermarkValue}'\n           ,'@{item().database_name}'\n           ,'@{item().schema_name}'\n           ,'@{item().table_name}'\n           ,@{activity('Delta_Load').output.rowsRead}\n           ,@{activity('Delta_Load').output.rowsCopied}\n           ,'Success'\n           ,'@{pipeline().RunId}'\n           ,'@{pipeline().TriggerId}'\n           ,'@{pipeline().TriggerName}'\n           ,'@{pipeline().TriggerType}'\n)",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "SQL_Watermark_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												}
+											},
+											{
+												"name": "DeltaLoad_Success_Email",
+												"type": "WebActivity",
+												"dependsOn": [
+													{
+														"activity": "Insert_New_WaterMark_Timestamp_Delta_copy",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
+													"method": "POST",
+													"headers": {},
+													"body": {
+														"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "Full_Load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "select * from @{item().schema_name}.@{item().table_name} where ModifiedDate <= '@{activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue}'",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "AzureBlobFSSink"
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "SQL_Source_Data_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "ADLS_Target_Dataset_Raw",
+														"type": "DatasetReference",
+														"parameters": {
+															"NewWatermarkValue": {
+																"value": "@activity('Get_New_Watermark_Timestamp').output.firstRow.NewWatermarkValue",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Insert_New_WaterMark_Timestamp_Full",
+												"type": "Lookup",
+												"dependsOn": [
+													{
+														"activity": "Full_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "INSERT INTO [dbo].[tbl_ADFPipeLineRuns]\n           ([ADFName]\n           ,[ActivityName]\n           ,[PipelineName]\n           ,[Pipeline_WatermarkTimeStamp]\n           ,[SourceDBName]\n           ,[SourceSchemaName]\n           ,[SourceTableName]\n           ,[RecordsRead]\n           ,[RecordsWrite]\n           ,[Status]\n           ,[PipeLineRunId]\n           ,[PipelineTriggerId]\n           ,[PipelineTriggerName]\n           ,[PipelineTriggerType])\n     OUTPUT '1 Row Inserted'\n     VALUES\n           ('@{pipeline().DataFactory}'\n           ,'Full_Load'\n           ,'@{pipeline().Pipeline}'       \n ,'@{activity('Get_New_Watermark_TimeStamp').output.firstRow.NewWatermarkValue}'\n           ,'@{item().database_name}'\n           ,'@{item().schema_name}'\n           ,'@{item().table_name}'\n           ,@{activity('Full_Load').output.rowsRead}\n           ,@{activity('Full_Load').output.rowsCopied}\n           ,'Success'\n           ,'@{pipeline().RunId}'\n           ,'@{pipeline().TriggerId}'\n           ,'@{pipeline().TriggerName}'\n           ,'@{pipeline().TriggerType}'\n)",
+															"type": "Expression"
+														},
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "SQL_Watermark_Table",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												}
+											},
+											{
+												"name": "FullLoad_Success_Email",
+												"type": "WebActivity",
+												"dependsOn": [
+													{
+														"activity": "Insert_New_WaterMark_Timestamp_Full",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"url": "https://prod-25.northcentralus.logic.azure.com:443/workflows/bfbd30bfa01c43ceb46e6652494a3358/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HcP2tUxjGVoQ0V6IBUM28eEy54hyNWlxtJTTmMF6yco",
+													"method": "POST",
+													"headers": {},
+													"body": {
+														"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Get_New_Watermark_Timestamp",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select format(GETDATE(), 'yyyy-MM-ddTHH:mm:ss') as NewWatermarkValue",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SQL_Source_Data_Table",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ADLS_Source_Table_List')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_Source_Data_Table')]",
+				"[concat(variables('factoryId'), '/datasets/ControlTable')]",
+				"[concat(variables('factoryId'), '/datasets/ADLS_Target_Dataset_Raw')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_Watermark_Table')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/2022CSVFiles')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "GetInputCSVFiles",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/2022/ControlTable.csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('2022CSVFiles_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/GetInputCSVFiles')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adsl_file_arrives')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "GetInputCSVFiles",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/2022/",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('adsl_file_arrives_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/GetInputCSVFiles')]"
+			]
+		}
+	]
+}
