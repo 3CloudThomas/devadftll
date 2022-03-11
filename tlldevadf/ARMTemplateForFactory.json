@@ -742,7 +742,7 @@
 													"method": "POST",
 													"headers": {},
 													"body": {
-														"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"pbrahmbhatt@3cloudsolutions.com\",\n}",
+														"value": "{\n    \"Subject\": \"Execution Successfull\",\n    \"DataFactoryName\": \"dataFactoryName: @{pipeline().DataFactory}\",\n    \"PipelineName\": \"pipelineName: @{pipeline().Pipeline}\",\n    \"EmailTo\": \"tleblanc@3cloudsolutions.com\",\n}",
 														"type": "Expression"
 													}
 												}
