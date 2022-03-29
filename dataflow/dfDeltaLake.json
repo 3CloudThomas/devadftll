@@ -1,6 +1,9 @@
 {
 	"name": "dfDeltaLake",
 	"properties": {
+		"folder": {
+			"name": "DeltaLake"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
@@ -47,9 +50,9 @@
 				"filter1 derive(Rating = iif( YEAR == \"1988\", \"1\", toString(Rating)),",
 				"          YEAR = iif( YEAR == \"1960\", \"2021\", toString(YEAR)),",
 				"          movies = iif( YEAR == \"1960\", movies + \"1000\", movies)) ~> UpdateBasedOnYear",
-				"UpdateBasedOnYear alterRow(updateIf(YEAR == \"1988\"),",
-				"     insertIf(YEAR == \"2021\"),",
-				"     deleteIf(YEAR == \"1950\")) ~> InsUpDel",
+				"UpdateBasedOnYear alterRow(updateIf(YEAR==\"1988\"),",
+				"     insertIf(YEAR==\"2021\"),",
+				"     deleteIf(YEAR==\"1950\")) ~> InsUpDel",
 				"InsUpDel sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delta',",

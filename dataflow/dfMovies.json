@@ -1,6 +1,9 @@
 {
 	"name": "dfMovies",
 	"properties": {
+		"folder": {
+			"name": "DeltaLake"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

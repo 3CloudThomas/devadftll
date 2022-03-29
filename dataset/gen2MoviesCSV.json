@@ -5,6 +5,9 @@
 			"referenceName": "DataLakeStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "DeltaLake"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

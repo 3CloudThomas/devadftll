@@ -5,6 +5,9 @@
 			"referenceName": "apisourcedls",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "DeltaLake"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
