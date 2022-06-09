@@ -563,8 +563,7 @@
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "Store Code",
-									"type": "Int32",
+									"name": "StoreCode",
 									"physicalType": "INT_32"
 								}
 							},
@@ -611,8 +610,7 @@
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "Square Meters",
-									"type": "Int32",
+									"name": "SquareMeters",
 									"physicalType": "INT_32"
 								}
 							},
@@ -623,8 +621,7 @@
 									"physicalType": "date"
 								},
 								"sink": {
-									"name": "Open Date",
-									"type": "DateTime",
+									"name": "OpenDate",
 									"physicalType": "INT_96"
 								}
 							},
@@ -635,8 +632,7 @@
 									"physicalType": "date"
 								},
 								"sink": {
-									"name": "Close Date",
-									"type": "DateTime",
+									"name": "CloseDate",
 									"physicalType": "INT_96"
 								}
 							},
