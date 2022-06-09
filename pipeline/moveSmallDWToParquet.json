@@ -47,7 +47,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "pqDimCustomer",
+						"referenceName": "pqDataCustomer",
 						"type": "DatasetReference"
 					}
 				]
@@ -97,7 +97,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DimDatepq",
+						"referenceName": "pwDataDate",
 						"type": "DatasetReference"
 					}
 				]
@@ -147,13 +147,13 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DimProductpq",
+						"referenceName": "pqDataProduct",
 						"type": "DatasetReference"
 					}
 				]
 			},
 			{
-				"name": "Category",
+				"name": "data Store",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -170,11 +170,34 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
-						"referenceName": "DimProdCat",
+						"referenceName": "DataStore",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "pq_dataStore",
 						"type": "DatasetReference"
 					}
 				]

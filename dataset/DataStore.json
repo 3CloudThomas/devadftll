@@ -1,5 +1,5 @@
 {
-	"name": "DimProdCat",
+	"name": "DataStore",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adftll_DW",
@@ -24,8 +24,8 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "SmallDW",
-			"table": "DimProductCategory"
+			"schema": "Data",
+			"table": "Store"
 		}
 	}
 }

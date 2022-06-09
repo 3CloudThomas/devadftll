@@ -1,5 +1,5 @@
 {
-	"name": "pqDimCustomer",
+	"name": "pqDataCustomer",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DataLakeStorage",
