@@ -1,0 +1,44 @@
+{
+	"name": "dataOrders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adftll_DW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OrderKey",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "CustomerKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StoreKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Order Date",
+				"type": "date"
+			},
+			{
+				"name": "Delivery Date",
+				"type": "date"
+			},
+			{
+				"name": "Currency Code",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "Data",
+			"table": "Orders"
+		}
+	}
+}
