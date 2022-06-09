@@ -1,5 +1,5 @@
 {
-	"name": "DimProductSQL",
+	"name": "DataProduct",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adftll_DW",
@@ -58,8 +58,8 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "SmallDW",
-			"table": "DimProduct"
+			"schema": "Data",
+			"table": "Product"
 		}
 	}
 }

@@ -1,5 +1,5 @@
 {
-	"name": "DimDate",
+	"name": "DataDate",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adftll_DW",

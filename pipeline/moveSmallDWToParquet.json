@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "DimCustomer",
+				"name": "Data Customer",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -53,7 +53,7 @@
 				]
 			},
 			{
-				"name": "DimDate",
+				"name": "Data Date",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -91,7 +91,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DimDate",
+						"referenceName": "DataDate",
 						"type": "DatasetReference"
 					}
 				],
@@ -103,7 +103,7 @@
 				]
 			},
 			{
-				"name": "DimProduct",
+				"name": "Data Product",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -141,13 +141,40 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DimProductSQL",
+						"referenceName": "DataProduct",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "DimProductpq",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Category",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DimProdCat",
 						"type": "DatasetReference"
 					}
 				]

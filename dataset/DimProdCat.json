@@ -1,0 +1,31 @@
+{
+	"name": "DimProdCat",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adftll_DW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ProductCategorySKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CategoryID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CategoryName",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "SmallDW",
+			"table": "DimProductCategory"
+		}
+	}
+}
