@@ -1,0 +1,92 @@
+{
+	"name": "DimDate",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adftll_DW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Date",
+				"type": "date"
+			},
+			{
+				"name": "DateKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Year Quarter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Year Quarter Number",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Quarter",
+				"type": "varchar"
+			},
+			{
+				"name": "Year Month",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Year Month Short",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Year Month Number",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Month",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Month Short",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Month Number",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Day of Week",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Day of Week Short",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Day of Week Number",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Working Day",
+				"type": "bit"
+			},
+			{
+				"name": "Working Day Number",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "Data",
+			"table": "Date"
+		}
+	}
+}

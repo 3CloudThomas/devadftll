@@ -1,0 +1,105 @@
+{
+	"name": "DimProductpq",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "data",
+				"fileSystem": "adventureworks"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CustomerKey",
+				"type": "INT32"
+			},
+			{
+				"name": "Gender",
+				"type": "UTF8"
+			},
+			{
+				"name": "Title",
+				"type": "UTF8"
+			},
+			{
+				"name": "GivenName",
+				"type": "UTF8"
+			},
+			{
+				"name": "MiddleInitial",
+				"type": "UTF8"
+			},
+			{
+				"name": "Surname",
+				"type": "UTF8"
+			},
+			{
+				"name": "StreetAddress",
+				"type": "UTF8"
+			},
+			{
+				"name": "City",
+				"type": "UTF8"
+			},
+			{
+				"name": "State",
+				"type": "UTF8"
+			},
+			{
+				"name": "StateFull",
+				"type": "UTF8"
+			},
+			{
+				"name": "ZipCode",
+				"type": "UTF8"
+			},
+			{
+				"name": "Country",
+				"type": "UTF8"
+			},
+			{
+				"name": "CountryFull",
+				"type": "UTF8"
+			},
+			{
+				"name": "Birthday",
+				"type": "INT96"
+			},
+			{
+				"name": "Age",
+				"type": "INT32"
+			},
+			{
+				"name": "Occupation",
+				"type": "UTF8"
+			},
+			{
+				"name": "Company",
+				"type": "UTF8"
+			},
+			{
+				"name": "Vehicle",
+				"type": "UTF8"
+			},
+			{
+				"name": "Latitude",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Longitude",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Continent",
+				"type": "UTF8"
+			}
+		]
+	}
+}
