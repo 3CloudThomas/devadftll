@@ -1,0 +1,106 @@
+{
+	"name": "DW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adftll_DW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CustomerKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Gender",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Title",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GivenName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MiddleInitial",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Surname",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StreetAddress",
+				"type": "nvarchar"
+			},
+			{
+				"name": "City",
+				"type": "nvarchar"
+			},
+			{
+				"name": "State",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StateFull",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ZipCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Country",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CountryFull",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Birthday",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Occupation",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Company",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Vehicle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Latitude",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Longitude",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Continent",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "Data",
+			"table": "Customer"
+		}
+	}
+}

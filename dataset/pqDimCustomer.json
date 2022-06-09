@@ -1,0 +1,20 @@
+{
+	"name": "pqDimCustomer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "data",
+				"fileSystem": "adventureworks"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
