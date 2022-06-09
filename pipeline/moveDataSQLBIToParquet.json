@@ -699,6 +699,77 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "OrderKey",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "OrderKey",
+									"type": "Int64",
+									"physicalType": "INT_64"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "CustomerKey",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "StoreKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "StoreKey",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Order Date",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "OrderDate",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "Delivery Date",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "DeliveryDate",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "Currency Code",
+									"type": "String",
+									"physicalType": "nchar"
+								},
+								"sink": {
+									"name": "CurrencyCode",
+									"physicalType": "UTF8"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -749,6 +820,94 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "OrderKey",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "OrderKey",
+									"type": "Int64",
+									"physicalType": "INT_64"
+								}
+							},
+							{
+								"source": {
+									"name": "Line Number",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "LineNumber",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "ProductKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ProductKey",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Quantity",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "Quantity",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Unit Price",
+									"type": "Decimal",
+									"physicalType": "money",
+									"scale": 4,
+									"precision": 19
+								},
+								"sink": {
+									"name": "UnitPrice",
+									"physicalType": "DECIMAL"
+								}
+							},
+							{
+								"source": {
+									"name": "Net Price",
+									"type": "Decimal",
+									"physicalType": "money",
+									"scale": 4,
+									"precision": 19
+								},
+								"sink": {
+									"name": "NetPrice",
+									"physicalType": "DECIMAL"
+								}
+							},
+							{
+								"source": {
+									"name": "Unit Cost",
+									"type": "Decimal",
+									"physicalType": "money",
+									"scale": 4,
+									"precision": 19
+								},
+								"sink": {
+									"name": "UnitCost",
+									"physicalType": "DECIMAL"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
