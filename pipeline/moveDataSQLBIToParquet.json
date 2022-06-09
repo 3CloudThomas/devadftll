@@ -82,6 +82,200 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "DateKey",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "DateKey",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Year",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "Year",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Year Quarter",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "YearQuarter",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Year Quarter Number",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "YearQuarterNumber",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Quarter",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Quarter",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Year Month",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "YearMonth",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Year Month Short",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "YearMonthShort",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Year Month Number",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "YearMonthNumber",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Month",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "Month",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Month Short",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "MonthShort",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Month Number",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "MonthNumber",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Day of Week",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "DayofWeek",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Day of Week Short",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "DayofWeekShort",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Day of Week Number",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "DayofWeekNumber",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "Working Day",
+									"type": "Boolean",
+									"physicalType": "bit"
+								},
+								"sink": {
+									"name": "WorkingDay",
+									"physicalType": "BOOLEAN"
+								}
+							},
+							{
+								"source": {
+									"name": "Working Day Number",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "WorkingDayNumber",
+									"physicalType": "INT_32"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
